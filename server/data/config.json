@@ -1,0 +1,44 @@
+{
+  "server": {
+    "port": 3000,
+    "jwtSecret": "f5d1135fcb0670e6138ad91410afc1b29e3d620d4e3fe18afddaf2b56272cbee"
+  },
+  "admin": {
+    "enabled": true,
+    "username": "788qa",
+    "passwordHash": "$2b$12$AkAUg2FOpndm08LvAi0mXuHnQqLvW.XD6/FVjXjKV5ppckVFkaIiq",
+    "debug": false
+  },
+  "bot": {
+    "username": "Sarlinens",
+    "password": "STEAMSARLINENS-582fd2320d304c4",
+    "sharedSecret": "KhY0zjdDTOJ4n+2HUnyDCvRVTSE=",
+    "identitySecret": "lOfks0tn\\/tUOXEHPtcQNc7JujUA=",
+    "apiKey": "5D89C1BE4330C06BB59D5701E7AD43F1",
+    "steamId64": "76561198313411665",
+    "customGameName": "레미온 스팀보석 거래소",
+    "status": "online"
+  },
+  "storageBots": [],
+  "prices": {
+    "gemBundleMarket": 1010,
+    "keyMarket": 2800,
+    "ticketMarket": 1200,
+    "keyToRefined": 56,
+    "buyMultiplier": 1.38,
+    "sellMultiplier": 0.68,
+    "overrides": {},
+    "autoFetchPrices": true,
+    "lastPriceFetch": 0
+  },
+  "blacklists": {
+    "weapon": [],
+    "hat": []
+  },
+  "tf2AutoRun": {
+    "enabled": true,
+    "startHour": 5,
+    "endHour": 22,
+    "durationMinutes": 30
+  }
+}

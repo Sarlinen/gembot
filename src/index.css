@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --color-steam-dark: #1b2838;
+  --color-steam-darker: #171a21;
+  --color-steam-darkest: #0e1520;
+  --color-steam-blue: #1a9fff;
+  --color-steam-light-blue: #66c0f4;
+  --color-steam-green: #5c7e10;
+  --color-steam-green-dark: #4c6b22;
+  --color-steam-hover: #2a475e;
+  --color-steam-border: #2a475e;
+  --color-steam-card: #16202d;
+  --color-steam-input: #32404e;
+  --color-steam-text: #c7d5e0;
+  --color-steam-muted: #8f98a0;
+  --color-gem: #a855f7;
+  --color-gem-glow: #c084fc;
+  --color-danger: #dc2626;
+  --color-warning: #f59e0b;
+  --color-success: #22c55e;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-steam-darker); }
+::-webkit-scrollbar-thumb { background: var(--color-steam-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-steam-blue); }
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--color-steam-darker);
+  color: var(--color-steam-text);
+  font-family: "Motiva Sans", Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-steam-blue);
+}
+
+@keyframes pulse-gem {
+  0%, 100% { box-shadow: 0 0 8px var(--color-gem); }
+  50% { box-shadow: 0 0 20px var(--color-gem-glow); }
+}
+.gem-pulse { animation: pulse-gem 2s ease-in-out infinite; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.3s ease-out; }
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spin-slow { animation: spin-slow 2s linear infinite; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.08) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}

@@ -1,0 +1,21 @@
+{
+  "name": "steam-gem-trading-bot",
+  "version": "1.0.0",
+  "description": "Steam 보석 거래소 - TF2 아이템 자동 거래 봇 서버",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "setup": "node setup.js"
+  },
+  "dependencies": {
+    "abort-controller": "^3.0.0",
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "node-fetch": "^2.7.0",
+    "steam-totp": "^2.1.2",
+    "steam-tradeoffer-manager": "^2.11.5",
+    "steam-user": "^5.0.10",
+    "steamcommunity": "^3.48.2"
+  }
+}
