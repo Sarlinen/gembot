@@ -380,6 +380,10 @@ interface AppState {
   addToBlacklist: (type: 'weapon' | 'hat', name: string) => void;
   removeFromBlacklist: (type: 'weapon' | 'hat', name: string) => void;
   applyPublicConfig: (data: Record<string, unknown>) => void;
+  showcaseSets: Array<{ appId: number; gameName: string; completeSets: number; sellPrice: number }> ;
+  setShowcaseSets: (sets: Array<{ appId: number; gameName: string; completeSets: number; sellPrice: number }>) => void;
+  novelAiConfig: { enabled: boolean; apiKey: string; model: string; cost: number };
+  setNovelAiConfig: (data: Partial<AppState['novelAiConfig']>) => void;
 
   adminEnabled: boolean;
   setAdminEnabled: (b: boolean) => void;
@@ -764,6 +768,11 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
+
+  showcaseSets: [],
+  setShowcaseSets: (sets) => set({ showcaseSets: sets }),
+  novelAiConfig: { enabled: false, apiKey: '', model: 'nai-diffusion-4-5-curated', cost: 100 },
+  setNovelAiConfig: (data) => set((st) => ({ novelAiConfig: { ...st.novelAiConfig, ...data } })),
   weaponBlacklist: [],
   hatBlacklist: [],
   setWeaponBlacklist: (list) => set({ weaponBlacklist: list }),
@@ -904,6 +913,22 @@ export const useStore = create<AppState>((set, get) => ({
         set({ storageBots: bots });
       }
 
+      if (data.showcase && typeof data.showcase === 'object' && Array.isArray(data.showcase.sets)) {
+        set({ showcaseSets: data.showcase.sets });
+      }
+
+      if (data.novelAi && typeof data.novelAi === 'object') {
+        set((st) => ({
+          novelAiConfig: {
+            ...st.novelAiConfig,
+            ...(typeof data.novelAi.enabled === 'boolean' ? { enabled: data.novelAi.enabled } : {}),
+            ...(typeof data.novelAi.apiKey === 'string' ? { apiKey: data.novelAi.apiKey } : {}),
+            ...(typeof data.novelAi.model === 'string' ? { model: data.novelAi.model } : {}),
+            ...(typeof data.novelAi.cost === 'number' ? { cost: data.novelAi.cost } : {}),
+          },
+        }));
+      }
+
       if (data.blacklists && typeof data.blacklists === 'object') {
         if (Array.isArray(data.blacklists.weapon)) set({ weaponBlacklist: data.blacklists.weapon });
         if (Array.isArray(data.blacklists.hat)) set({ hatBlacklist: data.blacklists.hat });
@@ -958,6 +983,8 @@ export const useStore = create<AppState>((set, get) => ({
           status: sb.status, capacity: sb.capacity, used: sb.used,
         })),
         blacklists: { weapon: state.weaponBlacklist, hat: state.hatBlacklist },
+        showcase: { sets: state.showcaseSets },
+        novelAi: state.novelAiConfig,
         admin: { enabled: state.adminEnabled, debug: state.debug },
         botStatus: state.botStatus,
       };

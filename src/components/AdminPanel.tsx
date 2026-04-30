@@ -170,6 +170,49 @@ function BotSettingsTab() {
         <p className="mt-1">🔒 보안: 사이트 외 거래 제안 자동 거절 / 역제안 자동 거절 / 에스크로·밴 계정 거래 차단</p>
       </div>
 
+
+      <div className="bg-steam-darker rounded-lg border border-steam-border p-4 space-y-3">
+        <h4 className="text-sm font-semibold text-white">🧩 TC Showcase 설정</h4>
+        <p className="text-xs text-steam-muted">쇼케이스 세트 JSON 배열을 입력하세요. (appId, gameName, completeSets, sellPrice)</p>
+        <textarea
+          value={showcaseJson}
+          onChange={(e) => setShowcaseJson(e.target.value)}
+          className="w-full min-h-36 bg-steam-input text-white px-3 py-2 rounded border border-steam-border text-xs font-mono"
+        />
+        <button
+          onClick={() => {
+            try {
+              const parsed = JSON.parse(showcaseJson);
+              if (!Array.isArray(parsed)) throw new Error('배열이 아닙니다');
+              setShowcaseSets(parsed);
+            } catch {
+              alert('쇼케이스 JSON 형식이 올바르지 않습니다.');
+            }
+          }}
+          className="px-3 py-1.5 bg-steam-blue text-white text-xs rounded"
+        >JSON 적용</button>
+      </div>
+
+      <div className="bg-steam-darker rounded-lg border border-steam-border p-4 space-y-3">
+        <h4 className="text-sm font-semibold text-white">🎨 NovelAI 설정</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <label className="text-xs text-steam-muted">활성화
+            <select value={novelAiConfig.enabled ? 'on' : 'off'} onChange={e => setNovelAiConfig({ enabled: e.target.value === 'on' })} className="w-full mt-1 bg-steam-input text-white px-2 py-1.5 rounded border border-steam-border text-xs">
+              <option value="off">비활성</option><option value="on">활성</option>
+            </select>
+          </label>
+          <label className="text-xs text-steam-muted">생성 코스트
+            <input type="number" value={novelAiConfig.cost} onChange={e => setNovelAiConfig({ cost: Number(e.target.value) || 0 })} className="w-full mt-1 bg-steam-input text-white px-2 py-1.5 rounded border border-steam-border text-xs"/>
+          </label>
+          <label className="text-xs text-steam-muted md:col-span-2">모델
+            <input type="text" value={novelAiConfig.model} onChange={e => setNovelAiConfig({ model: e.target.value })} className="w-full mt-1 bg-steam-input text-white px-2 py-1.5 rounded border border-steam-border text-xs"/>
+          </label>
+          <label className="text-xs text-steam-muted md:col-span-2">API 키
+            <input type="password" value={novelAiConfig.apiKey} onChange={e => setNovelAiConfig({ apiKey: e.target.value })} className="w-full mt-1 bg-steam-input text-white px-2 py-1.5 rounded border border-steam-border text-xs"/>
+          </label>
+        </div>
+      </div>
+
       <button
         onClick={handleSave}
         className="flex items-center gap-2 px-6 py-2 bg-steam-blue text-white rounded-lg text-sm font-medium hover:bg-steam-blue/80 transition"
@@ -673,14 +716,20 @@ function AdminTab() {
     adminEnabled, setAdminEnabled, adminLogout, adminToken,
     debug, setDebug,
     weaponBlacklist, hatBlacklist, addToBlacklist, removeFromBlacklist,
+    showcaseSets, setShowcaseSets, novelAiConfig, setNovelAiConfig,
   } = useStore();
   const [newWeaponBL, setNewWeaponBL] = useState('');
   const [newHatBL, setNewHatBL] = useState('');
+  const [showcaseJson, setShowcaseJson] = useState('[]');
   const [saved, setSaved] = useState(false);
   const [credCurrentPw, setCredCurrentPw] = useState('');
   const [credNewUsername, setCredNewUsername] = useState('');
   const [credNewPw, setCredNewPw] = useState('');
   const [credResult, setCredResult] = useState('');
+
+  useEffect(() => {
+    setShowcaseJson(JSON.stringify(showcaseSets, null, 2));
+  }, [showcaseSets]);
 
   const handleSave = () => {
     setSaved(true);
