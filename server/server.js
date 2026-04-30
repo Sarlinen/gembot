@@ -66,6 +66,8 @@ try {
     prices: { gemBundleMarket: 1500, keyMarket: 2800, ticketMarket: 1200, keyToRefined: 62, buyMultiplier: 1.10, sellMultiplier: 0.85, overrides: {} },
     blacklists: { weapon: [], hat: [] },
     tf2AutoRun: { enabled: true, startHour: 5, endHour: 22, durationMinutes: 30 },
+    showcase: { sets: [] },
+    novelAi: { enabled: false, apiKey: '', model: 'nai-diffusion-4-5-curated', cost: 100 },
   };
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), 'utf8');
 }
@@ -385,6 +387,52 @@ app.get('/api/public/config', (req, res) => {
     },
     prices: config.prices || {},
   });
+
+app.get('/api/public/showcase', (req, res) => {
+  res.json({
+    sets: Array.isArray(config.showcase?.sets) ? config.showcase.sets : [],
+  });
+});
+
+app.get('/api/public/novelai/config', (req, res) => {
+  res.json({
+    enabled: !!config.novelAi?.enabled,
+    cost: Number(config.novelAi?.cost || 0),
+    model: config.novelAi?.model || 'nai-diffusion-4-5-curated',
+  });
+});
+
+app.post('/api/novelai/generate', async (req, res) => {
+  try {
+    if (!config.novelAi?.enabled) return res.status(403).json({ error: 'NovelAI 기능이 비활성화되어 있습니다.' });
+    if (!config.novelAi?.apiKey) return res.status(400).json({ error: 'NovelAI API 키가 설정되지 않았습니다.' });
+
+    const prompt = String(req.body?.prompt || '').trim();
+    const negativePrompt = String(req.body?.negativePrompt || '').trim();
+    const model = String(req.body?.model || config.novelAi.model || 'nai-diffusion-4-5-curated');
+    if (!prompt) return res.status(400).json({ error: 'prompt가 필요합니다.' });
+
+    const naiRes = await fetchWithTimeout('https://image.novelai.net/ai/generate-image', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${config.novelAi.apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        input: prompt,
+        model,
+        parameters: { negative_prompt: negativePrompt || undefined },
+      }),
+    }, 35000);
+
+    if (!naiRes.ok) return res.status(naiRes.status).json({ error: 'NovelAI 생성 요청 실패' });
+    const buffer = Buffer.from(await naiRes.arrayBuffer());
+    res.json({ imageUrl: `data:image/png;base64,${buffer.toString('base64')}` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 });
 
 // ============================================================
@@ -452,6 +500,16 @@ app.post('/api/admin/config', authMiddleware, (req, res) => {
       config.blacklists = {
         weapon: Array.isArray(u.blacklists.weapon) ? u.blacklists.weapon : (config.blacklists?.weapon || []),
         hat: Array.isArray(u.blacklists.hat) ? u.blacklists.hat : (config.blacklists?.hat || []),
+      };
+    }
+
+    if (u.novelAi && typeof u.novelAi === 'object') {
+      config.novelAi = { ...(config.novelAi || {}), ...u.novelAi };
+    }
+
+    if (u.showcase && typeof u.showcase === 'object') {
+      config.showcase = {
+        sets: Array.isArray(u.showcase.sets) ? u.showcase.sets : (config.showcase?.sets || []),
       };
     }
 
