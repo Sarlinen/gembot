@@ -9,6 +9,8 @@ import { AdminLogin } from './components/AdminLogin';
 import { AdminPanel } from './components/AdminPanel';
 import { HowToTrade } from './components/HowToTrade';
 import { ServerErrorBanner, useAppBootstrap } from './modules/app';
+import { ShowcasePanel } from './modules/showcase/components/ShowcasePanel';
+import { NovelAiPanel } from './modules/novelai/components/NovelAiPanel';
 
 export default function App() {
   const { showAdmin, isAdminLoggedIn } = useStore();
@@ -33,6 +35,8 @@ export default function App() {
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-6 space-y-6">
         <TradeUrlInput />
         <HowToTrade />
+        <ShowcasePanel />
+        <NovelAiPanel />
         <CategorySelector />
         <TradingPanel />
         <TradeResultModal />

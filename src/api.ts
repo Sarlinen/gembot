@@ -378,3 +378,26 @@ export const EXCLUDED_PREFIXES = [
 export function hasExcludedPrefix(name: string): boolean {
   return EXCLUDED_PREFIXES.some(p => name.startsWith(p + ' '));
 }
+
+export async function getPublicShowcase(): Promise<{ sets: Array<{ appId: number; gameName: string; completeSets: number; sellPrice: number }> }> {
+  const response = await fetch('/api/public/showcase');
+  if (!response.ok) throw new Error('쇼케이스 조회 실패');
+  return response.json();
+}
+
+export async function getNovelAiConfig(): Promise<{ enabled: boolean; cost: number; model: string }> {
+  const response = await fetch('/api/public/novelai/config');
+  if (!response.ok) throw new Error('NovelAI 설정 조회 실패');
+  return response.json();
+}
+
+export async function generateNovelAiImage(body: { prompt: string; negativePrompt?: string; model?: string }): Promise<{ imageUrl: string }> {
+  const response = await fetch('/api/novelai/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'NovelAI 생성 실패');
+  return data;
+}
